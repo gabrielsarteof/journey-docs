@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Documentação técnica da plataforma Journey - Diagramas de casos de uso e arquitetura">
+    <title>Journey Platform - Diagramas Técnicos</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#121212',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#121212',
+                lineColor: '#c7c4bf',
+                secondaryColor: '#121212',
+                tertiaryColor: '#121212',
+                background: '#121212',
+                mainBkg: '#121212',
+                secondBkg: '#1a1a1a',
+                nodeBorder: '#121212',
+                clusterBkg: '#121212',
+                clusterBorder: '#121212',
+                titleColor: '#fff',
+                edgeLabelBackground: '#121212',
+                nodeTextColor: '#fff'
+            }
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #ffffff;
+            color: #0f0f0f;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 2px solid #e5e7eb;
+            padding: 1rem 2rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            height: 100px;
+            width: auto;
+            display: block;
+        }
+
+        .logo img {
+            height: 100%;
+            width: auto;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-button {
+            background: transparent;
+            color: #0f0f0f;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0;
+            font-weight: 400;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-button:hover {
+            background: #f9f9f9;
+        }
+
+        .nav-button.active {
+            background: #121212;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .diagram-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .diagram-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f0f0f;
+            margin-bottom: 0.5rem;
+        }
+
+        .diagram-description {
+            font-size: 1.125rem;
+            color: #52656d;
+            line-height: 1.6;
+        }
+
+        .diagram-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: #f3f4f6;
+            color: #0f0f0f;
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+        }
+
+        .diagram-content {
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .diagram-content > div {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .diagram-content svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            min-height: 400px;
+            background: transparent;
+            border: none;
+            overflow: visible;
+        }
+
+        pre.mermaid {
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font-family: inherit;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #52656d;
+            font-size: 1.125rem;
+        }
+
+        .error {
+            background: #fee;
+            border: 2px solid #fcc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            color: #c00;
+            margin-top: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 2px solid #e5e7eb;
+            color: #52656d;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .logo {
+                text-align: center;
+            }
+
+            .nav-buttons {
+                justify-content: center;
+            }
+
+            .nav-button {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .diagram-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="assets/images/journey-text-light.svg" alt="Journey Platform">
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-button active" data-diagram="1">Autenticação</button>
+                <button class="nav-button" data-diagram="2">Desafios</button>
+                <button class="nav-button" data-diagram="3">Validação</button>
+                <button class="nav-button" data-diagram="4">Execução</button>
+                <button class="nav-button" data-diagram="5">Pontuação</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="diagram-container">
+            <div class="loading">Carregando diagrama...</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>
+            Journey Platform - Documentação Técnica de Casos de Uso
+        </p>
+        <p style="margin-top: 0.5rem;">
+            Desenvolvido por <a href="https://github.com/gabrielsarteof" target="_blank" rel="noopener noreferrer" style="color: #0f0f0f; text-decoration: underline;">Gabriel Barboza Sarte</a>
+        </p>
+        <p style="margin-top: 0.25rem; font-size: 0.8rem; opacity: 0.7;">
+            Trabalho de Conclusão de Curso - 2025
+        </p>
+    </footer>
+
+    <script>
+        const diagrams = {
+            1: {
+                title: 'Autenticação e Dashboard',
+                description: 'Fluxo completo de registro, login com JWT, e carregamento do dashboard personalizado do usuário.',
+                tags: ['Auth', 'JWT', 'Redis', 'Dashboard'],
+                file: 'docs/architecture/detailed/01-authentication-dashboard.md'
+            },
+            2: {
+                title: 'Sistema de Desafios',
+                description: 'Como os desafios são apresentados, filtrados por nível/categoria, e iniciados pelo usuário.',
+                tags: ['Challenges', 'Filtering', 'Cache'],
+                file: 'docs/architecture/detailed/02-challenge-system.md'
+            },
+            3: {
+                title: 'Validação e Segurança',
+                description: '⭐ Coração da plataforma: 6 camadas de validação de prompts para uso seguro de IAs.',
+                tags: ['Security', 'Validation', 'Risk Scoring', 'Core Feature'],
+                file: 'docs/architecture/detailed/03-validation-security.md'
+            },
+            4: {
+                title: 'Execução e Avaliação',
+                description: 'Integração com Claude/GPT-4, execução em sandbox (Judge0), e avaliação com métricas (PR, DI, CS).',
+                tags: ['AI Integration', 'Judge0', 'Metrics', 'Traps'],
+                file: 'docs/architecture/detailed/04-execution-evaluation.md'
+            },
+            5: {
+                title: 'Pontuação e Progressão',
+                description: 'Sistema de gamificação completo: XP com multiplicadores, badges, níveis, streaks e leaderboards.',
+                tags: ['Gamification', 'XP System', 'Badges', 'WebSocket'],
+                file: 'docs/architecture/detailed/05-scoring-progression.md'
+            }
+        };
+
+        let currentDiagram = 1;
+
+        async function loadDiagram(diagramId) {
+            const container = document.getElementById('diagram-container');
+            const diagram = diagrams[diagramId];
+
+            if (!diagram) {
+                container.innerHTML = '<div class="error">Diagrama não encontrado.</div>';
+                return;
+            }
+
+            container.innerHTML = '<div class="loading">Carregando diagrama...</div>';
+
+            try {
+                const response = await fetch(diagram.file);
+                if (!response.ok) throw new Error('Erro ao carregar arquivo');
+
+                const markdown = await response.text();
+
+                // Extrai o conteúdo do bloco ```mermaid (procura especificamente por ```mermaid)
+                const mermaidMatch = markdown.match(/```mermaid\s*([\s\S]*?)```/);
+
+                if (!mermaidMatch) {
+                    throw new Error('Diagrama Mermaid não encontrado no arquivo');
+                }
+
+                const mermaidCode = mermaidMatch[1].trim();
+
+                // Gera ID único para o diagrama
+                const diagramId = `mermaid-${Date.now()}`;
+
+                // Renderiza o HTML
+                container.innerHTML = `
+                    <div class="diagram-header">
+                        <h1 class="diagram-title">${diagram.title}</h1>
+                        <p class="diagram-description">${diagram.description}</p>
+                        <div class="diagram-tags">
+                            ${diagram.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="diagram-content">
+                        <div id="${diagramId}"></div>
+                    </div>
+                `;
+
+                // Renderiza o diagrama Mermaid
+                const { svg } = await mermaid.render(diagramId + '-svg', mermaidCode);
+                document.getElementById(diagramId).innerHTML = svg;
+
+            } catch (error) {
+                console.error('Erro ao carregar diagrama:', error);
+                container.innerHTML = `
+                    <div class="error">
+                        <strong>Erro ao carregar diagrama:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Event listeners para os botões
+        document.querySelectorAll('.nav-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const diagramId = parseInt(button.dataset.diagram);
+
+                // Atualiza botão ativo
+                document.querySelectorAll('.nav-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+
+                // Carrega o diagrama
+                currentDiagram = diagramId;
+                loadDiagram(diagramId);
+            });
+        });
+
+        // Carrega o primeiro diagrama ao iniciar
+        loadDiagram(currentDiagram);
+    </script>
+</body>
+
+</html>
